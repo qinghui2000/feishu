@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>投诉复盘生成器-微软雅黑一键清空版</title>
+<style>
+    /* 页面基础样式 */
+    body {
+        font-family: "Microsoft YaHei", "微软雅黑", sans-serif;
+        background: #525659;
+        margin: 0;
+        padding: 20px;
+        display: flex;
+        justify-content: center;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+    .container {
+        display: flex;
+        flex-direction: row-reverse;
+        gap: 20px;
+        max-width: 1350px;
+        width: 100%;
+    }
+
+    .input-panel {
+        width: 380px;
+        background: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        height: fit-content;
+        position: sticky;
+        top: 20px;
+    }
+    h3 { margin: 0 0 15px 0; border-bottom: 1px solid #eee; padding-bottom: 10px; font-weight: bold; }
+    .form-row { display: flex; gap: 10px; margin-bottom: 12px; }
+    .form-item { flex: 1; }
+    label { display: block; font-size: 12px; font-weight: bold; margin-bottom: 5px; color: #666; }
+    input, textarea {
+        width: 100%;
+        margin-bottom: 12px;
+        padding: 8px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box;
+        font-size: 14px;
+        font-family: inherit;
+    }
+    textarea { height: 80px; resize: none; }
+
+    .btn-group { display: flex; flex-direction: column; gap: 10px; margin-top: 10px; }
+    .btn-export { background: #007aff; color: #fff; border: none; padding: 12px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 16px; }
+    .btn-clear { background: #ff3b30; color: #fff; border: none; padding: 10px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 14px; }
+
+    .output-panel {
+        width: 794px;
+        min-height: 1123px;
+        background-color: #fff;
+        background-image: url('logo.png');
+        background-repeat: no-repeat;
+        background-position: center center;
+        background-size: cover;
+        padding: 80px 90px;
+        box-sizing: border-box;
+        position: relative;
+        box-shadow: 0 0 20px rgba(0,0,0,0.5);
+        color: #000;
+    }
+
+    .report-title { text-align: center; font-size: 22pt; font-weight: 900; margin-bottom: 40px; }
+    .info-line { font-size: 12pt; line-height: 2.2; margin-bottom: 5px; display: flex; }
+    .info-item-left { width: 350px; }
+    .info-item-right { flex: 1; }
+    .label-bold { font-weight: bold; }
+    .section-title { font-size: 14pt; font-weight: bold; margin-top: 25px; margin-bottom: 8px; }
+    .content-body { font-size: 12pt; line-height: 1.8; white-space: pre-wrap; text-align: justify; font-weight: normal; min-height: 1em; }
+
+    /* --- 打印优化：核心修复代码 --- */
+    @page {
+        margin: 0; /* 强制移除浏览器默认页边距，从而隐藏页眉页脚 */
+    }
+    @media print {
+        body { background: #fff; padding: 0; }
+        .input-panel { display: none; }
+        .output-panel {
+            width: 100%;
+            padding: 50px 70px; /* 打印时适当留白，代替页边距 */
+            box-shadow: none;
+            background-image: url('logo.png') !important;
+            background-size: cover !important;
+        }
+    }
+</style>
+</head>
+<body>
+
+<div class="container">
+    <div class="input-panel">
+        <h3>复盘内容输入</h3>
+
+        <div class="form-row">
+            <div class="form-item">
+                <label>复盘日期</label>
+                <input type="date" id="in_Date" oninput="doSync()">
+            </div>
+            <div class="form-item">
+                <label>责任服务商</label>
+                <input id="in_Provider" type="text" oninput="doSync()">
+            </div>
+        </div>
+
+        <label>工单号</label>
+        <input id="in_Order" type="text" oninput="doSync()">
+
+        <div class="form-row">
+            <div class="form-item">
+                <label>投诉类型</label>
+                <input id="in_CompType" type="text" oninput="doSync()">
+            </div>
+            <div class="form-item">
+                <label>品类</label>
+                <input id="in_Category" type="text" oninput="doSync()">
+            </div>
+        </div>
+
+        <label>服务过程</label>
+        <textarea id="in_Process" oninput="doSync()"></textarea>
+
+        <label>问题与教训</label>
+        <textarea id="in_Lesson" oninput="doSync()"></textarea>
+
+        <label>整改要求</label>
+        <textarea id="in_Action" oninput="doSync()"></textarea>
+
+        <div class="btn-group">
+            <button class="btn-export" onclick="window.print()">保存 PDF / 打印</button>
+            <button class="btn-clear" onclick="clearInputs()">一键清空输入</button>
+        </div>
+    </div>
+
+    <div class="output-panel">
+        <div class="report-title" id="out_FullTitle"></div>
+
+        <div class="info-line">
+            <div class="info-item-left"><b class="label-bold">责任服务商：</b><span id="out_Provider" class="content-body"></span></div>
+            <div class="info-item-right"><b class="label-bold">工单号：</b><span id="out_Order" class="content-body"></span></div>
+        </div>
+
+        <div class="info-line">
+            <div class="info-item-left"><b class="label-bold">投诉类型：</b><span id="out_CompType" class="content-body"></span></div>
+            <div class="info-item-right"><b class="label-bold">品类：</b><span id="out_Category" class="content-body"></span></div>
+        </div>
+
+        <div class="section-title">服务过程：</div>
+        <div class="content-body" id="out_Process"></div>
+
+        <div class="section-title">问题与教训：</div>
+        <div class="content-body" id="out_Lesson"></div>
+
+        <div class="section-title">整改要求：</div>
+        <div class="content-body" id="out_Action"></div>
+    </div>
+</div>
+
+<script>
+    const fields = ['Provider', 'Order', 'CompType', 'Category', 'Process', 'Lesson', 'Action'];
+
+    function doSync() {
+        const dateVal = document.getElementById('in_Date').value;
+        let dateText = "";
+        if (dateVal) {
+            const d = new Date(dateVal);
+            dateText = (d.getMonth() + 1) + "月" + d.getDate() + "日";
+        }
+        const provider = document.getElementById('in_Provider').value || "";
+        document.getElementById('out_FullTitle').innerText = dateText + "投诉复盘小结" + (provider ? "（" + provider + "）" : "");
+
+        fields.forEach(f => {
+            const input = document.getElementById('in_' + f);
+            const output = document.getElementById('out_' + f);
+            if (input && output) { output.innerText = input.value; }
+        });
+    }
+
+    function clearInputs() {
+        if(confirm("确定要清空当前所有输入的内容吗？")) {
+            fields.forEach(f => {
+                document.getElementById('in_' + f).value = "";
+            });
+            doSync();
+        }
+    }
+
+    window.onload = function() {
+        const today = new Date();
+        document.getElementById('in_Date').value = today.toISOString().split('T')[0];
+        doSync();
+    };
+</script>
+</body>
+</html>
