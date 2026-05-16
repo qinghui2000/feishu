@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xml:lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>福州营销中心服务商整改通知书</title>
+<style>
+  /* ========== CSS 变量 ========== */
+  :root {
+    --border-color: #1f1f1f;
+    --text-color: #111;
+    --placeholder-color: #757575;
+    --focus-bg: #fffceb;
+    --focus-outline: #4A90D9;
+    --font-family: "SimSun", "STSong", "Noto Serif CJK SC", "宋体", serif;
+    --title-font-family: "SimHei", "STHeiti", "黑体", "PingFang SC", "Microsoft YaHei", sans-serif;
+    --page-width: 210mm;
+    --page-min-height: 297mm;
+    --page-padding-v: 15mm;
+    --page-padding-h: 15mm;
+  }
+
+  /* ========== 全局重置 ========== */
+  *, *::before, *::after {
+    box-sizing: border-box;
+  }
+
+  body {
+    margin: 0;
+    background: #f0f0f0;
+    font-family: var(--font-family);
+  }
+
+  /* ========== 页面容器 ========== */
+  .page {
+    width: var(--page-width);
+    min-height: var(--page-min-height);
+    margin: 24px auto;
+    background: #fff;
+    box-sizing: border-box;
+    padding: var(--page-padding-v) var(--page-padding-h) 14mm var(--page-padding-h);
+    color: var(--text-color);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  }
+
+  /* ========== 文档标题 ========== */
+  .doc-title {
+    font-family: var(--title-font-family);
+    font-size: 20px;
+    font-weight: 700;
+    text-align: center;
+    margin: 18px 0 14px 0;
+    line-height: 1.2;
+  }
+
+  /* ========== 工具栏 ========== */
+  .toolbar {
+    width: var(--page-width);
+    margin: 12px auto 0 auto;
+    text-align: right;
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+  }
+  .toolbar-btn {
+    font-family: var(--font-family);
+    font-size: 14px;
+    padding: 8px 14px;
+    border: 1px solid var(--border-color);
+    background: #fff;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .toolbar-btn:hover {
+    background: #f0f0f0;
+  }
+  .toolbar-btn:focus-visible {
+    outline: 2px solid var(--focus-outline);
+    outline-offset: 2px;
+  }
+
+  /* ========== 表格 ========== */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+    font-size: 10.5pt;
+    line-height: 1.35;
+    font-family: var(--font-family);
+  }
+  td {
+    border: 1px solid var(--border-color);
+    vertical-align: middle;
+    padding: 6px 10px;
+    word-break: break-word;
+  }
+  .c { text-align: center; white-space: nowrap; }
+  .vtop { vertical-align: top; }
+  .small { font-size: 10.5pt; }
+  .note { font-size: 10.5pt; line-height: 1.45; }
+  .line-item { margin: 10px 0 14px 0; }
+  .line-item .editable {
+    border-bottom: 1px solid var(--border-color);
+    min-width: 280px;
+    display: inline-block;
+    vertical-align: bottom;
+  }
+  .sign-label {
+    white-space: nowrap;
+  }
+  .sign-fill {
+    text-align: center;
+    white-space: pre-wrap;
+    word-break: break-word;
+    border-bottom: 1px solid var(--border-color);
+    display: inline-block;
+    min-width: 200px;
+  }
+  .input-text {
+    white-space: pre-wrap;
+    word-break: break-word;
+    line-height: 1.5;
+    vertical-align: top;
+  }
+  .input-text.editable {
+    text-align: left;
+  }
+
+  /* ========== 可编辑区域 ========== */
+  .editable {
+    white-space: pre-wrap;
+    word-break: break-word;
+    text-align: center;
+    outline: none;
+    border-radius: 2px;
+    transition: background 0.15s;
+  }
+  .editable:focus {
+    background: var(--focus-bg);
+    outline: 2px solid var(--focus-outline);
+    outline-offset: -2px;
+  }
+  .editable:empty::before {
+    content: attr(data-placeholder);
+    color: var(--placeholder-color);
+  }
+
+  /* ========== 签名区域 ========== */
+  .right-sign {
+    text-align: right;
+    padding-right: 70px;
+    margin-top: 18px;
+    line-height: 1.6;
+    white-space: nowrap;
+  }
+  .receipt-title {
+    font-size: 10.5pt;
+    margin-top: 6px;
+    margin-bottom: 2px;
+    font-weight: 700;
+  }
+
+  /* ========== 打印时隐藏 ========== */
+  .print-hide {
+    display: block;
+  }
+
+  /* ========== 保存提示 ========== */
+  .save-toast {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #333;
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-family: var(--font-family);
+    opacity: 0;
+    transition: opacity 0.3s;
+    pointer-events: none;
+    z-index: 999;
+  }
+  .save-toast.show {
+    opacity: 1;
+  }
+
+  /* ========== 打印样式 ========== */
+  @media print {
+    @page {
+      size: A4 portrait;
+      margin: 15mm;
+    }
+    body {
+      background: #fff;
+    }
+    .page {
+      margin: 0;
+      width: 100%;
+      min-height: auto;
+      padding: 0;
+      box-shadow: none;
+    }
+    .toolbar {
+      display: none;
+    }
+    .save-toast {
+      display: none;
+    }
+    .editable:focus {
+      background: transparent;
+      outline: none;
+    }
+    * {
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+    .no-break {
+      page-break-inside: avoid;
+    }
+  }
+
+  /* ========== 响应式（小屏） ========== */
+  @media screen and (max-width: 800px) {
+    .page, .toolbar {
+      width: 100%;
+    }
+    .page {
+      margin: 0;
+      padding: 10px;
+      min-height: auto;
+    }
+    .toolbar {
+      padding: 8px 10px;
+    }
+    td {
+      padding: 4px 6px;
+      font-size: 9pt;
+    }
+    .right-sign {
+      padding-right: 20px;
+    }
+  }
+</style>
+</head>
+<body>
+
+  <!-- 保存提示 -->
+  <div id="saveToast" class="save-toast">内容已自动保存</div>
+
+
+  <!-- 页面主体 -->
+  <div class="page">
+    <div class="doc-title">福州营销中心服务商整改通知书</div>
+
+    <table>
+      <!-- 第1行：服务商名称 + 编码 -->
+      <tr>
+        <td class="c" style="width:19%;">服务商名称</td>
+        <td class="editable" contenteditable="true" data-placeholder="请输入服务商名称" data-field="serviceName" style="width:36%;" aria-label="服务商名称"></td>
+        <td class="c" style="width:17%;">服务商编码</td>
+        <td class="editable" contenteditable="true" data-placeholder="请输入服务商编码" data-field="serviceCode" style="width:28%;" aria-label="服务商编码"></td>
+      </tr>
+
+      <!-- 第2行：负责人 + 电话 -->
+      <tr>
+        <td class="c">服务商负责人</td>
+        <td class="editable" contenteditable="true" data-placeholder="请输入服务商负责人" data-field="manager" aria-label="服务商负责人"></td>
+        <td class="c">联系电话</td>
+        <td class="editable" contenteditable="true" data-placeholder="请输入联系电话" data-field="managerPhone" aria-label="联系电话"></td>
+      </tr>
+
+      <!-- 第3行：整改原因 -->
+      <tr>
+        <td class="c">整改原因</td>
+        <td class="input-text editable" contenteditable="true" data-placeholder="请输入整改原因" data-field="reason" colspan="3" aria-label="整改原因"></td>
+      </tr>
+
+      <!-- 第4行：整改目标 -->
+      <tr>
+        <td class="c">整改目标<br><span class="small">（指标/业务）</span></td>
+        <td class="input-text editable" contenteditable="true" data-placeholder="请输入整改目标（可多行）" data-field="target" colspan="3" aria-label="整改目标"></td>
+      </tr>
+
+      <!-- 第5行：整改时间 -->
+      <tr>
+        <td class="c">整改时间</td>
+        <td class="c editable" contenteditable="true" data-placeholder="________年____月____日  ——  ________年____月____日" data-field="deadline" colspan="3" aria-label="整改时间"></td>
+      </tr>
+
+      <!-- 第6行：督办联系人 -->
+      <tr>
+        <td class="c">督办联系人</td>
+        <td class="editable" contenteditable="true" data-placeholder="请输入督办联系人" data-field="supervisor" aria-label="督办联系人"></td>
+        <td class="c">联系电话</td>
+        <td class="editable" contenteditable="true" data-placeholder="请输入联系电话" data-field="supervisorPhone" aria-label="督办联系电话"></td>
+      </tr>
+
+      <!-- 第7行：整改措施 + 回执 -->
+      <tr>
+        <td colspan="4" class="note vtop" style="padding:10px 14px 8px 14px;">
+          <div>贵司如在整改期限内未能达成整改目标，营销中心将采取如下措施：</div>
+          <div class="line-item"><span class="measure-label">调整区域：</span><span class="editable" contenteditable="true" data-placeholder="______________________" data-field="measure1" aria-label="调整区域措施"></span></div>
+          <div class="line-item"><span class="measure-label">调整业务：</span><span class="editable" contenteditable="true" data-placeholder="______________________" data-field="measure2" aria-label="调整业务措施"></span></div>
+          <div class="line-item"><span class="measure-label">停止派工：</span><span class="editable" contenteditable="true" data-placeholder="______________________" data-field="measure3" aria-label="停止派工措施"></span></div>
+          <div class="line-item"><span class="measure-label">淘汰处理：</span><span class="editable" contenteditable="true" data-placeholder="______________________" data-field="measure4" aria-label="淘汰处理措施"></span></div>
+
+          <div class="right-sign">
+            营销中心交付部长：<span class="editable sign-fill" contenteditable="true" data-placeholder="________" data-field="signMinister" aria-label="营销中心交付部长签名"></span><br>
+            日 期：<span class="editable sign-fill" contenteditable="true" data-placeholder="______年____月____日" data-field="signDate1" aria-label="签署日期"></span>
+          </div>
+
+          <div style="margin-top:6px;">
+            注：通知整改不达标，整改服务商现有区域或业务至其他服务商承接；对于整改不达标区域，营销中心有权利进一步调减区域或业务，直至整改达标。
+          </div>
+          <div style="border-top:1px solid var(--border-color); margin:4px -14px 0 -14px; padding-top:6px;"></div>
+
+          <div class="receipt-title">督办单回执</div>
+          <div>我司已收到公司整改要求，如整改期内未达到整改目标将接受公司的处理意见。</div>
+
+          <div class="right-sign" style="margin-top:20px; padding-right:88px;">
+            服务商负责人签名(盖章)：<span class="editable sign-fill" contenteditable="true" data-placeholder="________" data-field="signVendor" aria-label="服务商负责人签名"></span><br>
+            日 期：<span class="editable sign-fill" contenteditable="true" data-placeholder="______年____月____日" data-field="signDate2" aria-label="回执签署日期"></span>
+          </div>
+        </td>
+      </tr>
+
+      <!-- 第8行：整改验收 -->
+      <tr>
+        <td colspan="4" class="vtop" style="padding:12px 8px;">
+          <div class="line-item"><b>整改验收结果：</b>  <span class="editable" contenteditable="true" data-placeholder="□合格      □不合格" data-field="result" aria-label="整改验收结果"></span></div>
+          <div class="line-item"><b>审批意见：</b></div><div class="input-text editable" contenteditable="true" data-placeholder="请填写审批意见" data-field="approval" aria-label="审批意见" style="min-height: 80px;"></div>
+          <div class="right-sign" style="line-height:1.7; padding-right:88px;">
+            营销中心签字（总经理或交付部长）：<span class="editable sign-fill" contenteditable="true" data-placeholder="________" data-field="signFinal" aria-label="营销中心最终签字"></span><br>
+            日 期：<span class="editable sign-fill" contenteditable="true" data-placeholder="______年____月____日" data-field="signDate3" aria-label="最终签署日期"></span>
+          </div>
+        </td>
+      </tr>
+    </table>
+  </div>
+
+
+  <!-- 底部工具栏 -->
+  <div class="toolbar toolbar-bottom">
+    <button class="toolbar-btn" type="button" id="clearBtn" aria-label="清空所有内容">清空内容</button>
+    <button class="toolbar-btn" type="button" id="printBtn" aria-label="打印当前页面">生成打印PDF</button>
+  </div>
+  <script>
+    (function() {
+      'use strict';
+
+      /* ========== 配置 ========== */
+      const STORAGE_KEY = 'rectification_notice_data';
+      const SAVE_DELAY = 500; // 自动保存防抖延迟（毫秒）
+      const TOAST_DURATION = 2000; // 提示显示时长
+
+      /* ========== DOM 引用 ========== */
+      const editableFields = document.querySelectorAll('.editable[contenteditable="true"]');
+      const printBtn = document.getElementById('printBtn');
+      const clearBtn = document.getElementById('clearBtn');
+      const saveToast = document.getElementById('saveToast');
+
+      let saveTimer = null;
+      let toastTimer = null;
+
+      /* ========== 工具函数 ========== */
+
+      /** 显示保存提示 */
+      function showToast() {
+        if (toastTimer) {
+          clearTimeout(toastTimer);
+        }
+        saveToast.classList.add('show');
+        toastTimer = setTimeout(function() {
+          saveToast.classList.remove('show');
+        }, TOAST_DURATION);
+      }
+
+      /** 获取所有字段数据 */
+      function collectData() {
+        var data = {};
+        editableFields.forEach(function(el) {
+          var field = el.getAttribute('data-field');
+          if (field) {
+            data[field] = el.innerHTML;
+          }
+        });
+        return data;
+      }
+
+      /** 恢复数据到页面 */
+      function restoreData(data) {
+        editableFields.forEach(function(el) {
+          var field = el.getAttribute('data-field');
+          if (field && data[field] !== undefined) {
+            el.innerHTML = data[field];
+          }
+        });
+      }
+
+      /** 保存数据到 localStorage */
+      function saveData() {
+        try {
+          var data = collectData();
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+          showToast();
+        } catch (e) {
+          // localStorage 不可用时静默失败
+        }
+      }
+
+      /** 从 localStorage 加载数据 */
+      function loadData() {
+        try {
+          var raw = localStorage.getItem(STORAGE_KEY);
+          if (raw) {
+            var data = JSON.parse(raw);
+            restoreData(data);
+          }
+        } catch (e) {
+          // 解析失败时忽略
+        }
+      }
+
+      /** 清空所有内容 */
+      function clearAll() {
+        if (!confirm('确定要清空所有已填写的内容吗？')) {
+          return;
+        }
+        editableFields.forEach(function(el) {
+          el.innerHTML = '';
+        });
+        saveData();
+      }
+
+      /** 打印前校验必填字段 */
+      function validateBeforePrint() {
+        var required = [
+          { field: 'serviceName', label: '服务商名称' },
+          { field: 'serviceCode', label: '服务商编码' }
+        ];
+        var missing = [];
+        required.forEach(function(item) {
+          var el = document.querySelector('[data-field="' + item.field + '"]');
+          if (el && (el.innerHTML.trim() === '' || el.innerHTML.trim() === '<br>')) {
+            missing.push(item.label);
+          }
+        });
+        if (missing.length > 0) {
+          return '以下必填项尚未填写：\n' + missing.join('、') + '\n\n确定仍要打印吗？';
+        }
+        return null;
+      }
+
+      /** 执行打印 */
+      function handlePrint() {
+        // 打印前先保存
+        saveData();
+
+        var warning = validateBeforePrint();
+        if (warning) {
+          if (!confirm(warning)) {
+            return;
+          }
+        }
+
+        window.print();
+      }
+
+      /* ========== 事件绑定 ========== */
+
+      // 输入变化时自动保存（防抖）
+      editableFields.forEach(function(el) {
+        el.addEventListener('input', function() {
+          if (saveTimer) {
+            clearTimeout(saveTimer);
+          }
+          saveTimer = setTimeout(saveData, SAVE_DELAY);
+        });
+      });
+
+      // 打印按钮
+      if (printBtn) {
+        printBtn.addEventListener('click', handlePrint);
+      }
+
+      // 清空按钮
+      if (clearBtn) {
+        clearBtn.addEventListener('click', clearAll);
+      }
+
+      // 键盘快捷键：Ctrl+S 保存，Ctrl+P 打印
+      document.addEventListener('keydown', function(e) {
+        if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+          e.preventDefault();
+          saveData();
+        }
+        if ((e.ctrlKey || e.metaKey) && e.key === 'p') {
+          e.preventDefault();
+          handlePrint();
+        }
+      });
+
+      /* ========== 初始化 ========== */
+      loadData();
+
+    })();
+  </script>
+</body>
+</html>
