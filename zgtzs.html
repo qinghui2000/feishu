@@ -1,579 +1,240 @@
 <!DOCTYPE html>
-<html lang="zh-CN" xml:lang="zh-CN">
+<html lang="zh-CN">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>福州营销中心服务商整改通知书</title>
-<style>
-  /* ========== CSS 变量 ========== */
-  :root {
-    --border-color: #1f1f1f;
-    --text-color: #111;
-    --placeholder-color: #757575;
-    --focus-bg: #fffceb;
-    --focus-outline: #4A90D9;
-    --font-family: "SimSun", "STSong", "Noto Serif CJK SC", "宋体", serif;
-    --title-font-family: "SimHei", "STHeiti", "黑体", "PingFang SC", "Microsoft YaHei", sans-serif;
-    --page-width: 210mm;
-    --page-min-height: 297mm;
-    --page-padding-v: 15mm;
-    --page-padding-h: 15mm;
-  }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>营销中心服务商整改通知书</title>
+    <style>
+        /* CSS 样式：打造专业公文质感 */
+        body {
+            font-family: "Microsoft YaHei", "SimSun", sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 40px 0;
+            display: flex;
+            justify-content: center;
+        }
 
-  /* ========== 全局重置 ========== */
-  *, *::before, *::after {
-    box-sizing: border-box;
-  }
+        /* A4 纸张容器容器 */
+        .a4-container {
+            width: 850px;
+            min-height: 1100px;
+            background-color: #ffffff;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            padding: 60px 80px;
+            box-sizing: border-box;
+        }
 
-  body {
-    margin: 0;
-    background: #f0f0f0;
-    font-family: var(--font-family);
-  }
+        /* 标题样式 */
+        h1 {
+            text-align: center;
+            font-size: 26px;
+            color: #000000;
+            margin-bottom: 40px;
+            letter-spacing: 1px;
+        }
 
-  /* ========== 页面容器 ========== */
-  .page {
-    width: var(--page-width);
-    min-height: var(--page-min-height);
-    margin: 24px auto;
-    background: #fff;
-    box-sizing: border-box;
-    padding: var(--page-padding-v) var(--page-padding-h) 14mm var(--page-padding-h);
-    color: var(--text-color);
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-  }
+        /* 表格基础样式 */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            table-layout: fixed; /* 固定列宽 */
+            margin-bottom: 25px;
+        }
 
-  /* ========== 文档标题 ========== */
-  .doc-title {
-    font-family: var(--title-font-family);
-    font-size: 20px;
-    font-weight: 700;
-    text-align: center;
-    margin: 18px 0 14px 0;
-    line-height: 1.2;
-  }
+        th, td {
+            border: 1px solid #000000;
+            font-size: 15px;
+            height: 45px;
+            padding: 10px 12px;
+            box-sizing: border-box;
+            word-wrap: break-word; /* 允许长文本自动断行 */
+            vertical-align: middle;
+        }
 
-  /* ========== 工具栏 ========== */
-  .toolbar {
-    width: var(--page-width);
-    margin: 12px auto 0 auto;
-    text-align: right;
-    display: flex;
-    justify-content: flex-end;
-    gap: 8px;
-  }
-  .toolbar-btn {
-    font-family: var(--font-family);
-    font-size: 14px;
-    padding: 8px 14px;
-    border: 1px solid var(--border-color);
-    background: #fff;
-    cursor: pointer;
-    transition: background 0.2s;
-  }
-  .toolbar-btn:hover {
-    background: #f0f0f0;
-  }
-  .toolbar-btn:focus-visible {
-    outline: 2px solid var(--focus-outline);
-    outline-offset: 2px;
-  }
+        /* 灰色条纹标题栏 */
+        .label-bg {
+            background-color: #ffffff;
+            text-align: center;
+            font-weight: 500;
+            width: 15%; /* 默认标签列宽 */
+        }
 
-  /* ========== 表格 ========== */
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    table-layout: fixed;
-    font-size: 10.5pt;
-    line-height: 1.35;
-    font-family: var(--font-family);
-  }
-  td {
-    border: 1px solid var(--border-color);
-    vertical-align: middle;
-    padding: 6px 10px;
-    word-break: break-word;
-  }
-  .c { text-align: center; white-space: nowrap; }
-  .vtop { vertical-align: top; }
-  .small { font-size: 10.5pt; }
-  .note { font-size: 10.5pt; line-height: 1.45; }
-  .line-item { margin: 10px 0 14px 0; }
-  .line-item .editable {
-    border-bottom: 1px solid var(--border-color);
-    min-width: 280px;
-    display: inline-block;
-    vertical-align: bottom;
-  }
-  .sign-label {
-    white-space: nowrap;
-  }
-  .sign-fill {
-    text-align: center;
-    white-space: pre-wrap;
-    word-break: break-word;
-    border-bottom: 1px solid var(--border-color);
-    display: inline-block;
-    min-width: 200px;
-  }
-  .input-text {
-    white-space: pre-wrap;
-    word-break: break-word;
-    line-height: 1.5;
-    vertical-align: top;
-  }
-  .input-text.editable {
-    text-align: left;
-  }
+        /* 多行动态文本专属样式 */
+        .dynamic-text {
+            text-align: left;
+            line-height: 1.6;
+            white-space: pre-wrap; /* 核心：完美保留飞书多维表的换行、空格 */
+            color: #333333;
+        }
 
-  /* ========== 可编辑区域 ========== */
-  .editable {
-    white-space: pre-wrap;
-    word-break: break-word;
-    text-align: center;
-    outline: none;
-    border-radius: 2px;
-    transition: background 0.15s;
-  }
-  .editable:focus {
-    background: var(--focus-bg);
-    outline: 2px solid var(--focus-outline);
-    outline-offset: -2px;
-  }
-  .editable:empty::before {
-    content: attr(data-placeholder);
-    color: var(--placeholder-color);
-  }
+        /* 占位符提示样式 */
+        .placeholder {
+            color: #aaaaaa;
+            font-style: italic;
+        }
 
-  /* ========== 签名区域 ========== */
-  .right-sign {
-    text-align: right;
-    padding-right: 70px;
-    margin-top: 18px;
-    line-height: 1.6;
-    white-space: nowrap;
-  }
-  .receipt-title {
-    font-size: 10.5pt;
-    margin-top: 6px;
-    margin-bottom: 2px;
-    font-weight: 700;
-  }
+        /* 居中显示的数据列 */
+        .center-text {
+            text-align: center;
+            color: #333333;
+        }
 
-  /* ========== 打印时隐藏 ========== */
-  .print-hide {
-    display: block;
-  }
+        /* 下方下划线处罚条款区域 */
+        .penalty-section {
+            font-size: 15px;
+            line-height: 2.2;
+            color: #000000;
+            margin-top: 15px;
+        }
 
-  /* ========== 保存提示 ========== */
-  .save-toast {
-    position: fixed;
-    bottom: 24px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: #333;
-    color: #fff;
-    padding: 10px 20px;
-    border-radius: 6px;
-    font-size: 14px;
-    font-family: var(--font-family);
-    opacity: 0;
-    transition: opacity 0.3s;
-    pointer-events: none;
-    z-index: 999;
-  }
-  .save-toast.show {
-    opacity: 1;
-  }
+        .penalty-item {
+            margin-bottom: 12px;
+            display: flex;
+            align-items: flex-end;
+        }
 
-  /* ========== 打印样式 ========== */
-  @media print {
-    @page {
-      size: A4 portrait;
-      margin: 15mm;
-    }
-    body {
-      background: #fff;
-    }
-    .page {
-      margin: 0;
-      width: 100%;
-      min-height: auto;
-      padding: 0;
-      box-shadow: none;
-    }
-    .toolbar {
-      display: none;
-    }
-    .save-toast {
-      display: none;
-    }
-    .editable:focus {
-      background: transparent;
-      outline: none;
-    }
-    * {
-      -webkit-print-color-adjust: exact;
-      print-color-adjust: exact;
-    }
-    .no-break {
-      page-break-inside: avoid;
-    }
-  }
+        .penalty-label {
+            white-space: nowrap;
+        }
 
-  /* ========== 响应式（小屏） ========== */
-  @media screen and (max-width: 800px) {
-    .page, .toolbar {
-      width: 100%;
-    }
-    .page {
-      margin: 0;
-      padding: 10px;
-      min-height: auto;
-    }
-    .toolbar {
-      padding: 8px 10px;
-    }
-    td {
-      padding: 4px 6px;
-      font-size: 9pt;
-    }
-    .right-sign {
-      padding-right: 20px;
-    }
-  }
-</style>
+        .underline-space {
+            flex-grow: 1;
+            border-bottom: 1px solid #000000;
+            margin-left: 10px;
+            padding-left: 15px;
+            color: #333333;
+            min-height: 24px;
+        }
+    </style>
 </head>
 <body>
 
-  <div id="saveToast" class="save-toast">内容已自动保存</div>
+    <div class="a4-container">
+        <h1>福州营销中心服务商整改通知书</h1>
 
-  <div class="page">
-    <div class="doc-title">福州营销中心服务商整改通知书</div>
+        <table>
+            <tr>
+                <td class="label-bg">服务商名称</td>
+                <td colspan="2" class="center-text" data-field="serviceName"><span class="placeholder">正在加载服务商名称...</span></td>
+                <td class="label-bg">服务商编码</td>
+                <td colspan="2" class="center-text" data-field="serviceCode"><span class="placeholder">正在加载编码...</span></td>
+            </tr>
+            <tr>
+                <td class="label-bg">服务商负责人</td>
+                <td colspan="2" class="center-text" data-field="manager"><span class="placeholder">正在加载负责人...</span></td>
+                <td class="label-bg">联系电话</td>
+                <td colspan="2" class="center-text" data-field="managerPhone"><span class="placeholder">正在加载电话...</span></td>
+            </tr>
+            <tr>
+                <td class="label-bg">整改原因</td>
+                <td colspan="5" class="dynamic-text" data-field="reason"><span class="placeholder">请输入整改原因</span></td>
+            </tr>
+            <tr>
+                <td class="label-bg">整改目标<br>(指标/业务)</td>
+                <td colspan="5" class="dynamic-text" data-field="target"><span class="placeholder">请输入整改目标（可多行）</span></td>
+            </tr>
+            <tr>
+                <td class="label-bg">整改时间</td>
+                <td colspan="5" class="center-text">
+                    <span id="start-date-span">2026年05月16日</span>
+                    &nbsp;——&nbsp;
+                    <span id="end-date-span" style="font-weight: bold;"><span class="placeholder">2026年05月16日</span></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="label-bg">督办联系人</td>
+                <td colspan="2" class="center-text" data-field="supervisor"><span class="placeholder">请输入督办联系人</span></td>
+                <td class="label-bg">联系电话</td>
+                <td colspan="2" class="center-text" data-field="supervisorPhone"><span class="placeholder">请输入联系电话</span></td>
+            </tr>
+        </table>
 
-    <table>
-      <tr>
-        <td class="c" style="width:19%;">服务商名称</td>
-        <td class="editable" contenteditable="true" data-placeholder="请输入服务商名称" data-field="serviceName" style="width:36%;" aria-label="服务商名称"></td>
-        <td class="c" style="width:17%;">服务商编码</td>
-        <td class="editable" contenteditable="true" data-placeholder="请输入服务商编码" data-field="serviceCode" style="width:28%;" aria-label="服务商编码"></td>
-      </tr>
+        <div class="penalty-section">
+            <div style="font-weight: bold; margin-bottom: 15px;">贵司如在整改期限内未能达成整改目标，营销中心将采取如下措施：</div>
+            
+            <div class="penalty-item">
+                <span class="penalty-label">调整区域：</span>
+                <div class="underline-space" data-field="adjustArea"></div>
+            </div>
+            <div class="penalty-item">
+                <span class="penalty-label">调整业务：</span>
+                <div class="underline-space" data-field="adjustBusiness"></div>
+            </div>
+            <div class="penalty-item">
+                <span class="penalty-label">停止派工：</span>
+                <div class="underline-space" data-field="stopDispatch"></div>
+            </div>
+            <div class="penalty-item">
+                <span class="penalty-label">淘汰处理：</span>
+                <div class="underline-space" data-field="eliminateProcess"></div>
+            </div>
+        </div>
+    </div>
 
-      <tr>
-        <td class="c">服务商负责人</td>
-        <td class="editable" contenteditable="true" data-placeholder="请输入服务商负责人" data-field="manager" aria-label="服务商负责人"></td>
-        <td class="c">联系电话</td>
-        <td class="editable" contenteditable="true" data-placeholder="请输入联系电话" data-field="managerPhone" aria-label="联系电话"></td>
-      </tr>
+    <script>
+        /* ========== 1. 飞书 URL 参数映射表 ========== */
+        const paramMap = {
+            'p': 'serviceName',       // 服务商名称
+            'o': 'serviceCode',       // 服务商编码
+            'm': 'manager',           // 服务商负责人
+            'mp': 'managerPhone',     // 联系电话
+            'r': 'reason',            // 整改原因
+            't': 'target',            // 整改目标
+            's': 'supervisor',        // 督办联系人
+            'sp': 'supervisorPhone'   // 督办联系电话
+        };
 
-      <tr>
-        <td class="c">整改原因</td>
-        <td class="input-text editable" contenteditable="true" data-placeholder="请输入整改原因" data-field="reason" colspan="3" aria-label="整改原因"></td>
-      </tr>
+        /* ========== 2. 页面初始化填充逻辑 ========== */
+        function initNotificationPage() {
+            // 获取 URL 传参
+            const urlParams = new URLSearchParams(window.location.search);
 
-      <tr>
-        <td class="c">整改目标<br><span class="small">（指标/业务）</span></td>
-        <td class="input-text editable" contenteditable="true" data-placeholder="请输入整改目标（可多行）" data-field="target" colspan="3" aria-label="整改目标"></td>
-      </tr>
-
-      <tr>
-        <td class="c">整改时间</td>
-        <td class="c editable" contenteditable="true" data-placeholder="________年____月____日  ——  ________年____月____日" data-field="deadline" colspan="3" aria-label="整改时间"></td>
-      </tr>
-
-      <tr>
-        <td class="c">督办联系人</td>
-        <td class="editable" contenteditable="true" data-placeholder="请输入督办联系人" data-field="supervisor" aria-label="督办联系人"></td>
-        <td class="c">联系电话</td>
-        <td class="editable" contenteditable="true" data-placeholder="请输入联系电话" data-field="supervisorPhone" aria-label="督办联系电话"></td>
-      </tr>
-
-      <tr>
-        <td colspan="4" class="note vtop" style="padding:10px 14px 8px 14px;">
-          <div>贵司如在整改期限内未能达成整改目标，营销中心将采取如下措施：</div>
-          <div class="line-item"><span class="measure-label">调整区域：</span><span class="editable" contenteditable="true" data-placeholder="______________________" data-field="measure1" aria-label="调整区域措施"></span></div>
-          <div class="line-item"><span class="measure-label">调整业务：</span><span class="editable" contenteditable="true" data-placeholder="______________________" data-field="measure2" aria-label="调整业务措施"></span></div>
-          <div class="line-item"><span class="measure-label">停止派工：</span><span class="editable" contenteditable="true" data-placeholder="______________________" data-field="measure3" aria-label="停止派工措施"></span></div>
-          <div class="line-item"><span class="measure-label">淘汰处理：</span><span class="editable" contenteditable="true" data-placeholder="______________________" data-field="measure4" aria-label="淘汰处理措施"></span></div>
-
-          <div class="right-sign">
-            营销中心交付部长：<span class="editable sign-fill" contenteditable="true" data-placeholder="________" data-field="signMinister" aria-label="营销中心交付部长签名"></span><br>
-            日 期：<span class="editable sign-fill" contenteditable="true" data-placeholder="______年____月____日" data-field="signDate1" aria-label="签署日期"></span>
-          </div>
-
-          <div style="margin-top:6px;">
-            注：通知整改不达标，整改服务商现有区域或业务至其他服务商承接；对于整改不达标区域，营销中心有权利进一步调减区域或业务，直至整改达标。
-          </div>
-          <div style="border-top:1px solid var(--border-color); margin:4px -14px 0 -14px; padding-top:6px;"></div>
-
-          <div class="receipt-title">督办单回执</div>
-          <div>我司已收到公司整改要求，如整改期内未达到整改目标将接受公司的处理意见。</div>
-
-          <div class="right-sign" style="margin-top:20px; padding-right:88px;">
-            服务商负责人签名(盖章)：<span class="editable sign-fill" contenteditable="true" data-placeholder="________" data-field="signVendor" aria-label="服务商负责人签名"></span><br>
-            日 期：<span class="editable sign-fill" contenteditable="true" data-placeholder="______年____月____日" data-field="signDate2" aria-label="回执签署日期"></span>
-          </div>
-        </td>
-      </tr>
-
-      <tr>
-        <td colspan="4" class="vtop" style="padding:12px 8px;">
-          <div class="line-item"><b>整改验收结果：</b>  <span class="editable" contenteditable="true" data-placeholder="□合格      □不合格" data-field="result" aria-label="整改验收结果"></span></div>
-          <div class="line-item"><b>审批意见：</b></div><div class="input-text editable" contenteditable="true" data-placeholder="请填写审批意见" data-field="approval" aria-label="审批意见" style="min-height: 80px;"></div>
-          <div class="right-sign" style="line-height:1.7; padding-right:88px;">
-            营销中心签字（总经理或交付部长）：<span class="editable sign-fill" contenteditable="true" data-placeholder="________" data-field="signFinal" aria-label="营销中心最终签字"></span><br>
-            日 期：<span class="editable sign-fill" contenteditable="true" data-placeholder="______年____月____日" data-field="signDate3" aria-label="最终签署日期"></span>
-          </div>
-        </td>
-      </tr>
-    </table>
-  </div>
-
-  <div class="toolbar toolbar-bottom">
-    <button class="toolbar-btn" type="button" id="clearBtn" aria-label="清空所有内容">清空内容</button>
-    <button class="toolbar-btn" type="button" id="printBtn" aria-label="打印当前页面">生成打印PDF</button>
-  </div>
-
-  <script>
-    (function() {
-      'use strict';
-
-      /* ========== 配置 ========== */
-      const STORAGE_KEY = 'rectification_notice_data';
-      const SAVE_DELAY = 500; // 自动保存防抖延迟（毫秒）
-      const TOAST_DURATION = 2000; // 提示显示时长
-
-      /* ========== DOM 引用 ========== */
-      const editableFields = document.querySelectorAll('.editable[contenteditable="true"]');
-      const printBtn = document.getElementById('printBtn');
-      const clearBtn = document.getElementById('clearBtn');
-      const saveToast = document.getElementById('saveToast');
-
-      let saveTimer = null;
-      let toastTimer = null;
-
-     /* ========== 1. 飞书 URL 参数映射表 ========== */
-// 键名为飞书传过来的参数名，键值为 HTML 中对应的 data-field 属性名
-const paramMap = {
-  'p': 'serviceName',       // 服务商名称
-  'o': 'serviceCode',       // 服务商编码
-  'm': 'manager',           // 服务商负责人
-  'mp': 'managerPhone',     // 联系电话
-  'r': 'reason',            // 整改原因
-  't': 'target',            // 整改目标
-  'd': 'deadline',          // 整改时间
-  's': 'supervisor',        // 督办联系人
-  'sp': 'supervisorPhone'   // 督办联系电话
-};
-
-/* ========== 2. 自动解析 URL 参数并渲染到页面 ========== */
-function initPageParams() {
-  // 获取当前 URL 的参数
-  const urlParams = new URLSearchParams(window.location.search);
-
-  // 遍历映射表，把参数值填入对应的 HTML 元素中
-  for (const [paramKey, dataField] of Object.entries(paramMap)) {
-    // 获取参数值
-    const rawValue = urlParams.get(paramKey);
-    
-    if (rawValue !== null) {
-      // 【关键修改】使用 decodeURIComponent 进行解码，防止飞书传过来的中文乱码
-      const decodedValue = decodeURIComponent(rawValue);
-      
-      // 寻找页面上对应 data-field 属性的元素
-      const element = document.querySelector(`[data-field="${dataField}"]`);
-      
-      if (element) {
-        // 如果是输入框或文本域，修改其 value；普通标签（如 span, div）修改 textContent
-        if (element.tagName === 'INPUT' || element.tagName === 'TEXTAREA') {
-          element.value = decodedValue;
-        } else {
-          element.textContent = decodedValue;
-        }
-      }
-    }
-  }
-}
-
-// 页面加载完成后执行
-window.addEventListener('DOMContentLoaded', initPageParams);
-
-      /* ========== 工具函数 ========== */
-
-      /** 显示保存提示 */
-      function showToast() {
-        if (toastTimer) {
-          clearTimeout(toastTimer);
-        }
-        saveToast.classList.add('show');
-        toastTimer = setTimeout(function() {
-          saveToast.classList.remove('show');
-        }, TOAST_DURATION);
-      }
-
-      /** 获取所有字段数据 */
-      function collectData() {
-        var data = {};
-        editableFields.forEach(function(el) {
-          var field = el.getAttribute('data-field');
-          if (field) {
-            data[field] = el.innerHTML;
-          }
-        });
-        return data;
-      }
-
-      /** 恢复数据到页面 */
-      function restoreData(data) {
-        editableFields.forEach(function(el) {
-          var field = el.getAttribute('data-field');
-          if (field && data[field] !== undefined) {
-            el.innerHTML = data[field];
-          }
-        });
-      }
-
-      /** 保存数据到 localStorage */
-      function saveData() {
-        try {
-          var data = collectData();
-          localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-          showToast();
-        } catch (e) {
-          // localStorage 不可用时静默失败
-        }
-      }
-
-      /** 初始化数据加载（融合本地缓存与飞书URL参数解析） */
-      function initAndLoadData() {
-        try {
-          // 1. 先尝试从浏览器本地缓存恢复已有内容
-          var raw = localStorage.getItem(STORAGE_KEY);
-          if (raw) {
-            var data = JSON.parse(raw);
-            restoreData(data);
-          }
-
-          // 2. 解析 URL 参数（支持从飞书无缝跳转并传参）
-          const urlParams = new URLSearchParams(window.location.search);
-          let hasUrlParams = false;
-
-          for (const [param, fieldName] of Object.entries(paramMap)) {
-            const val = urlParams.get(param);
-            if (val) {
-              // 准确定位富文本可编辑节点
-              const targetEl = document.querySelector(`[data-field="${fieldName}"]`);
-              if (targetEl) {
-                targetEl.innerHTML = decodeURIComponent(val);
-                hasUrlParams = true;
-              }
+            // A. 循环解析常规字段
+            for (const [paramKey, dataField] of Object.entries(paramMap)) {
+                const rawValue = urlParams.get(paramKey);
+                
+                if (rawValue !== null) {
+                    // 解码防止中文乱码
+                    const decodedValue = decodeURIComponent(rawValue).trim();
+                    
+                    if (decodedValue !== "") {
+                        const element = document.querySelector(`[data-field="${dataField}"]`);
+                        if (element) {
+                            // 使用 innerHTML 以便自动转换换行符（主要是原因和目标）
+                            element.innerHTML = decodedValue.replace(/\n/g, '<br>');
+                        }
+                    }
+                }
             }
-          }
 
-          // 3. 如果没有任何地方传整改时间参数，默认为今天
-          const deadlineEl = document.querySelector('[data-field="deadline"]');
-          if (deadlineEl && (!deadlineEl.innerHTML.trim() || deadlineEl.innerHTML.trim() === '<br>')) {
-            const today = new Date();
-            const y = today.getFullYear();
-            const m = String(today.getMonth() + 1).padStart(2, '0');
-            const d = String(today.getDate()).padStart(2, '0');
-            // 按格式组合出当前的默认日期区间占位样式
-            deadlineEl.innerHTML = `${y}年${m}月${d}日  ——  ${y}年${m}月${d}日`;
-          }
-
-          // 4. 如果是通过 URL 链入带数据的，立刻触发一次自动存档
-          if (hasUrlParams) {
-            saveData();
-          }
-
-        } catch (e) {
-          console.error("初始化数据失败:", e);
-        }
-      }
-
-      /** 清空所有内容 */
-      function clearAll() {
-        if (!confirm('确定要清空所有已填写的内容吗？')) {
-          return;
-        }
-        editableFields.forEach(function(el) {
-          el.innerHTML = '';
-        });
-        saveData();
-      }
-
-      /** 打印前校验必填字段 */
-      function validateBeforePrint() {
-        var required = [
-          { field: 'serviceName', label: '服务商名称' },
-          { field: 'serviceCode', label: '服务商编码' }
-        ];
-        var missing = [];
-        required.forEach(function(item) {
-          var el = document.querySelector('[data-field="' + item.field + '"]');
-          if (el && (el.innerHTML.trim() === '' || el.innerHTML.trim() === '<br>')) {
-            missing.push(item.label);
-          }
-        });
-        if (missing.length > 0) {
-          return '以下必填项尚未填写：\n' + missing.join('、') + '\n\n确定仍要打印吗？';
-        }
-        return null;
-      }
-
-      /** 执行打印 */
-      function handlePrint() {
-        // 打印前强制同步最新修改
-        saveData();
-
-        var warning = validateBeforePrint();
-        if (warning) {
-          if (!confirm(warning)) {
-            return;
-          }
+            // B. 特殊处理“整改结束日期（deadline）”
+            const deadlineRaw = urlParams.get('d');
+            if (deadlineRaw) {
+                const dateStr = decodeURIComponent(deadlineRaw).trim();
+                // 预期格式为 YYYY-MM-DD，进行拆分转换
+                const dateParts = dateStr.split('-');
+                if (dateParts.length === 3) {
+                    const year = dateParts[0];
+                    const month = parseInt(dateParts[1], 10); // 去除前导0，如 06 变成 6
+                    const day = parseInt(dateParts[2], 10);   // 去除前导0
+                    
+                    // 格式化为：XXXX年XX月XX日
+                    const chineseFormatDate = `${year}年${month < 10 ? '0' + month : month}月${day < 10 ? '0' + day : day}日`;
+                    
+                    const endDateContainer = document.getElementById('end-date-span');
+                    if (endDateContainer) {
+                        endDateContainer.textContent = chineseFormatDate;
+                    }
+                } else {
+                    // 如果传过来的格式不是标准横杠分隔，则直接原样展示
+                    document.getElementById('end-date-span').textContent = dateStr;
+                }
+            }
         }
 
-        window.print();
-      }
-
-      /* ========== 事件绑定 ========== */
-
-      // 单元格内容发生改变时防抖自动保存
-      editableFields.forEach(function(el) {
-        el.addEventListener('input', function() {
-          if (saveTimer) {
-            clearTimeout(saveTimer);
-          }
-          saveTimer = setTimeout(saveData, SAVE_DELAY);
-        });
-      });
-
-      // 打印按钮点击
-      if (printBtn) {
-        printBtn.addEventListener('click', handlePrint);
-      }
-
-      // 清空按钮点击
-      if (clearBtn) {
-        clearBtn.addEventListener('click', clearAll);
-      }
-
-      // 全局快捷键：Ctrl+S 手动存盘，Ctrl+P 唤起打印
-      document.addEventListener('keydown', function(e) {
-        if ((e.ctrlKey || e.metaKey) && e.key === 's') {
-          e.preventDefault();
-          saveData();
-        }
-        if ((e.ctrlKey || e.metaKey) && e.key === 'p') {
-          e.preventDefault();
-          handlePrint();
-        }
-      });
-
-      /* ========== 初始化运行 ========== */
-      initAndLoadData();
-
-    })();
-  </script>
+        // 确保在 DOM 树加载完成后执行
+        document.addEventListener('DOMContentLoaded', initNotificationPage);
+    </script>
 </body>
 </html>
