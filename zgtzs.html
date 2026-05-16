@@ -246,16 +246,12 @@
 </head>
 <body>
 
-  <!-- 保存提示 -->
   <div id="saveToast" class="save-toast">内容已自动保存</div>
 
-
-  <!-- 页面主体 -->
   <div class="page">
     <div class="doc-title">福州营销中心服务商整改通知书</div>
 
     <table>
-      <!-- 第1行：服务商名称 + 编码 -->
       <tr>
         <td class="c" style="width:19%;">服务商名称</td>
         <td class="editable" contenteditable="true" data-placeholder="请输入服务商名称" data-field="serviceName" style="width:36%;" aria-label="服务商名称"></td>
@@ -263,7 +259,6 @@
         <td class="editable" contenteditable="true" data-placeholder="请输入服务商编码" data-field="serviceCode" style="width:28%;" aria-label="服务商编码"></td>
       </tr>
 
-      <!-- 第2行：负责人 + 电话 -->
       <tr>
         <td class="c">服务商负责人</td>
         <td class="editable" contenteditable="true" data-placeholder="请输入服务商负责人" data-field="manager" aria-label="服务商负责人"></td>
@@ -271,25 +266,21 @@
         <td class="editable" contenteditable="true" data-placeholder="请输入联系电话" data-field="managerPhone" aria-label="联系电话"></td>
       </tr>
 
-      <!-- 第3行：整改原因 -->
       <tr>
         <td class="c">整改原因</td>
         <td class="input-text editable" contenteditable="true" data-placeholder="请输入整改原因" data-field="reason" colspan="3" aria-label="整改原因"></td>
       </tr>
 
-      <!-- 第4行：整改目标 -->
       <tr>
         <td class="c">整改目标<br><span class="small">（指标/业务）</span></td>
         <td class="input-text editable" contenteditable="true" data-placeholder="请输入整改目标（可多行）" data-field="target" colspan="3" aria-label="整改目标"></td>
       </tr>
 
-      <!-- 第5行：整改时间 -->
       <tr>
         <td class="c">整改时间</td>
         <td class="c editable" contenteditable="true" data-placeholder="________年____月____日  ——  ________年____月____日" data-field="deadline" colspan="3" aria-label="整改时间"></td>
       </tr>
 
-      <!-- 第6行：督办联系人 -->
       <tr>
         <td class="c">督办联系人</td>
         <td class="editable" contenteditable="true" data-placeholder="请输入督办联系人" data-field="supervisor" aria-label="督办联系人"></td>
@@ -297,7 +288,6 @@
         <td class="editable" contenteditable="true" data-placeholder="请输入联系电话" data-field="supervisorPhone" aria-label="督办联系电话"></td>
       </tr>
 
-      <!-- 第7行：整改措施 + 回执 -->
       <tr>
         <td colspan="4" class="note vtop" style="padding:10px 14px 8px 14px;">
           <div>贵司如在整改期限内未能达成整改目标，营销中心将采取如下措施：</div>
@@ -326,7 +316,6 @@
         </td>
       </tr>
 
-      <!-- 第8行：整改验收 -->
       <tr>
         <td colspan="4" class="vtop" style="padding:12px 8px;">
           <div class="line-item"><b>整改验收结果：</b>  <span class="editable" contenteditable="true" data-placeholder="□合格      □不合格" data-field="result" aria-label="整改验收结果"></span></div>
@@ -340,12 +329,11 @@
     </table>
   </div>
 
-
-  <!-- 底部工具栏 -->
   <div class="toolbar toolbar-bottom">
     <button class="toolbar-btn" type="button" id="clearBtn" aria-label="清空所有内容">清空内容</button>
     <button class="toolbar-btn" type="button" id="printBtn" aria-label="打印当前页面">生成打印PDF</button>
   </div>
+
   <script>
     (function() {
       'use strict';
@@ -363,6 +351,20 @@
 
       let saveTimer = null;
       let toastTimer = null;
+
+      /* ========== 飞书 URL 参数映射表 ========== */
+      // 键名为飞书传过来的参数名，键值为 HTML 中对应的 data-field 属性名
+      const paramMap = {
+        'p': 'serviceName',       // 服务商名称 (对应原逻辑 Provider)
+        'o': 'serviceCode',       // 服务商编码 (对应原逻辑 Order)
+        'm': 'manager',           // 服务商负责人
+        'mp':'managerPhone',      // 联系电话
+        'r': 'reason',            // 整改原因
+        't': 'target',            // 整改目标
+        'd': 'deadline',          // 整改时间
+        's': 'supervisor',        // 督办联系人
+        'sp':'supervisorPhone'    // 督办联系电话
+      };
 
       /* ========== 工具函数 ========== */
 
@@ -410,16 +412,50 @@
         }
       }
 
-      /** 从 localStorage 加载数据 */
-      function loadData() {
+      /** 初始化数据加载（融合本地缓存与飞书URL参数解析） */
+      function initAndLoadData() {
         try {
+          // 1. 先尝试从浏览器本地缓存恢复已有内容
           var raw = localStorage.getItem(STORAGE_KEY);
           if (raw) {
             var data = JSON.parse(raw);
             restoreData(data);
           }
+
+          // 2. 解析 URL 参数（支持从飞书无缝跳转并传参）
+          const urlParams = new URLSearchParams(window.location.search);
+          let hasUrlParams = false;
+
+          for (const [param, fieldName] of Object.entries(paramMap)) {
+            const val = urlParams.get(param);
+            if (val) {
+              // 准确定位富文本可编辑节点
+              const targetEl = document.querySelector(`[data-field="${fieldName}"]`);
+              if (targetEl) {
+                targetEl.innerHTML = decodeURIComponent(val);
+                hasUrlParams = true;
+              }
+            }
+          }
+
+          // 3. 如果没有任何地方传整改时间参数，默认为今天
+          const deadlineEl = document.querySelector('[data-field="deadline"]');
+          if (deadlineEl && (!deadlineEl.innerHTML.trim() || deadlineEl.innerHTML.trim() === '<br>')) {
+            const today = new Date();
+            const y = today.getFullYear();
+            const m = String(today.getMonth() + 1).padStart(2, '0');
+            const d = String(today.getDate()).padStart(2, '0');
+            // 按格式组合出当前的默认日期区间占位样式
+            deadlineEl.innerHTML = `${y}年${m}月${d}日  ——  ${y}年${m}月${d}日`;
+          }
+
+          // 4. 如果是通过 URL 链入带数据的，立刻触发一次自动存档
+          if (hasUrlParams) {
+            saveData();
+          }
+
         } catch (e) {
-          // 解析失败时忽略
+          console.error("初始化数据失败:", e);
         }
       }
 
@@ -455,7 +491,7 @@
 
       /** 执行打印 */
       function handlePrint() {
-        // 打印前先保存
+        // 打印前强制同步最新修改
         saveData();
 
         var warning = validateBeforePrint();
@@ -470,7 +506,7 @@
 
       /* ========== 事件绑定 ========== */
 
-      // 输入变化时自动保存（防抖）
+      // 单元格内容发生改变时防抖自动保存
       editableFields.forEach(function(el) {
         el.addEventListener('input', function() {
           if (saveTimer) {
@@ -480,17 +516,17 @@
         });
       });
 
-      // 打印按钮
+      // 打印按钮点击
       if (printBtn) {
         printBtn.addEventListener('click', handlePrint);
       }
 
-      // 清空按钮
+      // 清空按钮点击
       if (clearBtn) {
         clearBtn.addEventListener('click', clearAll);
       }
 
-      // 键盘快捷键：Ctrl+S 保存，Ctrl+P 打印
+      // 全局快捷键：Ctrl+S 手动存盘，Ctrl+P 唤起打印
       document.addEventListener('keydown', function(e) {
         if ((e.ctrlKey || e.metaKey) && e.key === 's') {
           e.preventDefault();
@@ -502,8 +538,8 @@
         }
       });
 
-      /* ========== 初始化 ========== */
-      loadData();
+      /* ========== 初始化运行 ========== */
+      initAndLoadData();
 
     })();
   </script>
