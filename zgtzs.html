@@ -352,19 +352,51 @@
       let saveTimer = null;
       let toastTimer = null;
 
-      /* ========== 飞书 URL 参数映射表 ========== */
-      // 键名为飞书传过来的参数名，键值为 HTML 中对应的 data-field 属性名
-      const paramMap = {
-        'p': 'serviceName',       // 服务商名称 (对应原逻辑 Provider)
-        'o': 'serviceCode',       // 服务商编码 (对应原逻辑 Order)
-        'm': 'manager',           // 服务商负责人
-        'mp':'managerPhone',      // 联系电话
-        'r': 'reason',            // 整改原因
-        't': 'target',            // 整改目标
-        'd': 'deadline',          // 整改时间
-        's': 'supervisor',        // 督办联系人
-        'sp':'supervisorPhone'    // 督办联系电话
-      };
+     /* ========== 1. 飞书 URL 参数映射表 ========== */
+// 键名为飞书传过来的参数名，键值为 HTML 中对应的 data-field 属性名
+const paramMap = {
+  'p': 'serviceName',       // 服务商名称
+  'o': 'serviceCode',       // 服务商编码
+  'm': 'manager',           // 服务商负责人
+  'mp': 'managerPhone',     // 联系电话
+  'r': 'reason',            // 整改原因
+  't': 'target',            // 整改目标
+  'd': 'deadline',          // 整改时间
+  's': 'supervisor',        // 督办联系人
+  'sp': 'supervisorPhone'   // 督办联系电话
+};
+
+/* ========== 2. 自动解析 URL 参数并渲染到页面 ========== */
+function initPageParams() {
+  // 获取当前 URL 的参数
+  const urlParams = new URLSearchParams(window.location.search);
+
+  // 遍历映射表，把参数值填入对应的 HTML 元素中
+  for (const [paramKey, dataField] of Object.entries(paramMap)) {
+    // 获取参数值
+    const rawValue = urlParams.get(paramKey);
+    
+    if (rawValue !== null) {
+      // 【关键修改】使用 decodeURIComponent 进行解码，防止飞书传过来的中文乱码
+      const decodedValue = decodeURIComponent(rawValue);
+      
+      // 寻找页面上对应 data-field 属性的元素
+      const element = document.querySelector(`[data-field="${dataField}"]`);
+      
+      if (element) {
+        // 如果是输入框或文本域，修改其 value；普通标签（如 span, div）修改 textContent
+        if (element.tagName === 'INPUT' || element.tagName === 'TEXTAREA') {
+          element.value = decodedValue;
+        } else {
+          element.textContent = decodedValue;
+        }
+      }
+    }
+  }
+}
+
+// 页面加载完成后执行
+window.addEventListener('DOMContentLoaded', initPageParams);
 
       /* ========== 工具函数 ========== */
 
