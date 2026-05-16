@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>营销中心服务商整改通知书</title>
     <style>
-        /* CSS 样式：打造专业公文质感 */
+        /* A4 纸张页面排版质感样式 */
         body {
             font-family: "Microsoft YaHei", "SimSun", sans-serif;
             background-color: #f5f5f5;
@@ -15,7 +15,6 @@
             justify-content: center;
         }
 
-        /* A4 纸张容器容器 */
         .a4-container {
             width: 850px;
             min-height: 1100px;
@@ -25,7 +24,6 @@
             box-sizing: border-box;
         }
 
-        /* 标题样式 */
         h1 {
             text-align: center;
             font-size: 26px;
@@ -34,11 +32,10 @@
             letter-spacing: 1px;
         }
 
-        /* 表格基础样式 */
         table {
             width: 100%;
             border-collapse: collapse;
-            table-layout: fixed; /* 固定列宽 */
+            table-layout: fixed; /* 固定列宽，防止变形 */
             margin-bottom: 25px;
         }
 
@@ -52,35 +49,27 @@
             vertical-align: middle;
         }
 
-        /* 灰色条纹标题栏 */
         .label-bg {
             background-color: #ffffff;
             text-align: center;
             font-weight: 500;
-            width: 15%; /* 默认标签列宽 */
+            width: 15%; 
         }
 
-        /* 多行动态文本专属样式 */
+        /* 关键：给动态长文本区域加样式，保留飞书的换行与空格 */
         .dynamic-text {
             text-align: left;
             line-height: 1.6;
-            white-space: pre-wrap; /* 核心：完美保留飞书多维表的换行、空格 */
+            white-space: pre-wrap; /* 保留飞书里的换行符 \n */
             color: #333333;
         }
 
-        /* 占位符提示样式 */
-        .placeholder {
-            color: #aaaaaa;
-            font-style: italic;
-        }
-
-        /* 居中显示的数据列 */
         .center-text {
             text-align: center;
             color: #333333;
         }
 
-        /* 下方下划线处罚条款区域 */
+        /* 下方下划线区域 */
         .penalty-section {
             font-size: 15px;
             line-height: 2.2;
@@ -116,37 +105,37 @@
         <table>
             <tr>
                 <td class="label-bg">服务商名称</td>
-                <td colspan="2" class="center-text" data-field="serviceName"><span class="placeholder">正在加载服务商名称...</span></td>
+                <td colspan="2" class="center-text" data-field="serviceName"></td>
                 <td class="label-bg">服务商编码</td>
-                <td colspan="2" class="center-text" data-field="serviceCode"><span class="placeholder">正在加载编码...</span></td>
+                <td colspan="2" class="center-text" data-field="serviceCode"></td>
             </tr>
             <tr>
                 <td class="label-bg">服务商负责人</td>
-                <td colspan="2" class="center-text" data-field="manager"><span class="placeholder">正在加载负责人...</span></td>
+                <td colspan="2" class="center-text" data-field="manager"></td>
                 <td class="label-bg">联系电话</td>
-                <td colspan="2" class="center-text" data-field="managerPhone"><span class="placeholder">正在加载电话...</span></td>
+                <td colspan="2" class="center-text" data-field="managerPhone"></td>
             </tr>
             <tr>
                 <td class="label-bg">整改原因</td>
-                <td colspan="5" class="dynamic-text" data-field="reason"><span class="placeholder">请输入整改原因</span></td>
+                <td colspan="5" class="dynamic-text" data-field="reason"></td>
             </tr>
             <tr>
                 <td class="label-bg">整改目标<br>(指标/业务)</td>
-                <td colspan="5" class="dynamic-text" data-field="target"><span class="placeholder">请输入整改目标（可多行）</span></td>
+                <td colspan="5" class="dynamic-text" data-field="target"></td>
             </tr>
             <tr>
                 <td class="label-bg">整改时间</td>
                 <td colspan="5" class="center-text">
                     <span id="start-date-span">2026年05月16日</span>
                     &nbsp;——&nbsp;
-                    <span id="end-date-span" style="font-weight: bold;"><span class="placeholder">2026年05月16日</span></span>
+                    <span id="end-date-span" style="font-weight: bold;">2026年05月16日</span>
                 </td>
             </tr>
             <tr>
                 <td class="label-bg">督办联系人</td>
-                <td colspan="2" class="center-text" data-field="supervisor"><span class="placeholder">请输入督办联系人</span></td>
+                <td colspan="2" class="center-text" data-field="supervisor"></td>
                 <td class="label-bg">联系电话</td>
-                <td colspan="2" class="center-text" data-field="supervisorPhone"><span class="placeholder">请输入联系电话</span></td>
+                <td colspan="2" class="center-text" data-field="supervisorPhone"></td>
             </tr>
         </table>
 
@@ -173,7 +162,7 @@
     </div>
 
     <script>
-        /* ========== 1. 飞书 URL 参数映射表 ========== */
+        // 1. 飞书 URL 参数映射表
         const paramMap = {
             'p': 'serviceName',       // 服务商名称
             'o': 'serviceCode',       // 服务商编码
@@ -185,55 +174,58 @@
             'sp': 'supervisorPhone'   // 督办联系电话
         };
 
-        /* ========== 2. 页面初始化填充逻辑 ========== */
         function initNotificationPage() {
-            // 获取 URL 传参
             const urlParams = new URLSearchParams(window.location.search);
 
-            // A. 循环解析常规字段
+            // A. 解析并填充所有文字字段
             for (const [paramKey, dataField] of Object.entries(paramMap)) {
                 const rawValue = urlParams.get(paramKey);
                 
                 if (rawValue !== null) {
-                    // 解码防止中文乱码
+                    // 解码飞书传过来的 URL 编码字符（如将 %E8%8E%86 还原为中文）
                     const decodedValue = decodeURIComponent(rawValue).trim();
                     
                     if (decodedValue !== "") {
+                        // 寻找 HTML 中带有 data-field 属性的单元格
                         const element = document.querySelector(`[data-field="${dataField}"]`);
                         if (element) {
-                            // 使用 innerHTML 以便自动转换换行符（主要是原因和目标）
-                            element.innerHTML = decodedValue.replace(/\n/g, '<br>');
+                            // 针对原因和目标，自动将文本换行符 \n 替换为网页可视的 <br> 标签
+                            if (dataField === 'reason' || dataField === 'target') {
+                                element.innerHTML = decodedValue.replace(/\n/g, '<br>');
+                            } else {
+                                element.textContent = decodedValue;
+                            }
                         }
                     }
                 }
             }
 
-            // B. 特殊处理“整改结束日期（deadline）”
+            // B. 针对“整改时间（d）”进行智能日期转换
             const deadlineRaw = urlParams.get('d');
             if (deadlineRaw) {
                 const dateStr = decodeURIComponent(deadlineRaw).trim();
-                // 预期格式为 YYYY-MM-DD，进行拆分转换
                 const dateParts = dateStr.split('-');
+                
+                // 如果是飞书多维表传过来的标准 2026-06-11 格式，将其格式化为中文大写格式
                 if (dateParts.length === 3) {
                     const year = dateParts[0];
-                    const month = parseInt(dateParts[1], 10); // 去除前导0，如 06 变成 6
-                    const day = parseInt(dateParts[2], 10);   // 去除前导0
+                    const month = parseInt(dateParts[1], 10);
+                    const day = parseInt(dateParts[2], 10);
                     
-                    // 格式化为：XXXX年XX月XX日
-                    const chineseFormatDate = `${year}年${month < 10 ? '0' + month : month}月${day < 10 ? '0' + day : day}日`;
+                    const formattedEndDate = `${year}年${month < 10 ? '0' + month : month}月${day < 10 ? '0' + day : day}日`;
                     
                     const endDateContainer = document.getElementById('end-date-span');
                     if (endDateContainer) {
-                        endDateContainer.textContent = chineseFormatDate;
+                        endDateContainer.textContent = formattedEndDate;
                     }
                 } else {
-                    // 如果传过来的格式不是标准横杠分隔，则直接原样展示
+                    // 备用：如果不是标准横杠格式，则直接原样填充
                     document.getElementById('end-date-span').textContent = dateStr;
                 }
             }
         }
 
-        // 确保在 DOM 树加载完成后执行
+        // 确保页面骨架加载完成后立刻执行脚本
         document.addEventListener('DOMContentLoaded', initNotificationPage);
     </script>
 </body>
