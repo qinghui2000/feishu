@@ -48,10 +48,11 @@
         font-family: inherit;
     }
     textarea { height: 80px; resize: none; }
+    select { width: 100%; margin-bottom: 12px; padding: 8px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; font-size: 14px; font-family: inherit; background: #fff; }
 
     .btn-group { display: flex; flex-direction: column; gap: 10px; margin-top: 10px; }
     .btn-export { background: #007aff; color: #fff; border: none; padding: 12px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 16px; }
-    .btn-clear { background: #ff3b30; color: #fff; border: none; padding: 10px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 14px; }
+   .btn-clear { background: #ff3b30; color: #fff; border: none; padding: 10px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 14px; }
 
     .output-panel {
         width: 794px;
@@ -91,6 +92,9 @@
             background-size: cover !important;
         }
     }
+    .btn-save-base { background: #34c759; color: #fff; border: none; padding: 10px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 14px; }
+    .btn-save-base:disabled { background: #a0a0a0; cursor: not-allowed; }
+    .btn-save-base.loading { background: #007aff; }
 </style>
 </head>
 <body>
@@ -116,11 +120,23 @@
         <div class="form-row">
             <div class="form-item">
                 <label>投诉类型</label>
-                <input id="in_CompType" type="text" oninput="doSync()">
+                <select id="in_CompType" onchange="doSync()">
+                    <option value="">请选择</option>
+                    <option value="服务时效类">服务时效类</option>
+                    <option value="服务技能类">服务技能类</option>
+                    <option value="服务规范类">服务规范类</option>
+                </select>
             </div>
             <div class="form-item">
                 <label>品类</label>
-                <input id="in_Category" type="text" oninput="doSync()">
+                <select id="in_Category" onchange="doSync()">
+                    <option value="">请选择</option>
+                    <option value="冰冷">冰冷</option>
+                    <option value="洗衣机">洗衣机</option>
+                    <option value="视线">视线</option>
+                    <option value="厨卫">厨卫</option>
+                    <option value="家用空调">家用空调</option>
+                </select>
             </div>
         </div>
 
@@ -133,10 +149,11 @@
         <label>整改要求</label>
         <textarea id="in_Action" oninput="doSync()"></textarea>
 
-        <div class="btn-group">
-            <button class="btn-export" onclick="window.print()">保存 PDF / 打印</button>
-            <button class="btn-clear" onclick="clearInputs()">一键清空输入</button>
-        </div>
+           <div class="btn-group">
+               <button class="btn-export" onclick="window.print()">保存 PDF / 打印</button>
+               <button class="btn-clear" onclick="clearInputs()">一键清空输入</button>
+                <button class="btn-save-base" onclick="saveToBase()" id="btn_save_base">保存到多维表</button>
+           </div>
     </div>
 
     <div class="output-panel">
@@ -189,14 +206,78 @@
                 document.getElementById('in_' + f).value = "";
             });
             doSync();
-        }
+    }
     }
 
     window.onload = function() {
         const today = new Date();
         document.getElementById('in_Date').value = today.toISOString().split('T')[0];
+        parseUrlParams();
         doSync();
     };
+
+    function parseUrlParams() {
+        const params = new URLSearchParams(window.location.search);
+        const map = { p:'Provider', o:'Order', t:'CompType', c:'Category', pr:'Process', l:'Lesson', a:'Action', d:'Date' };
+        for (const [key, id] of Object.entries(map)) {
+            const val = params.get(key);
+            if (val) {
+                document.getElementById('in_' + id).value = decodeURIComponent(val);
+            }
+        }
+    }
+
+    const WORKER_URL = 'https://feishu.qinghui2000.workers.dev/';
+    const BEARER_TOKEN = 'qh_proxy_2026!A9xK#7mP2vT4sL8zQ1nR';
+
+    async function saveToBase() {
+        const btn = document.getElementById('btn_save_base');
+        btn.disabled = true;
+        btn.classList.add('loading');
+        btn.textContent = '保存中...';
+
+        try {
+            const fields = {
+                date: document.getElementById('in_Date').value,
+                provider: document.getElementById('in_Provider').value,
+                order: document.getElementById('in_Order').value,
+                compType: document.getElementById('in_CompType').value,
+                category: document.getElementById('in_Category').value,
+                process: document.getElementById('in_Process').value,
+                lesson: document.getElementById('in_Lesson').value,
+                action: document.getElementById('in_Action').value,
+            };
+
+            const resp = await fetch(WORKER_URL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + BEARER_TOKEN,
+                },
+                body: JSON.stringify(fields),
+            });
+
+            const result = await resp.json();
+            if (result.ok) {
+                btn.textContent = '✅ 已保存';
+                btn.classList.remove("loading");
+                return;
+            } else {
+                const errMsg = result.feishuMsg || result.error || JSON.stringify(result).slice(0, 50);
+                btn.textContent = "❌ " + errMsg;
+                console.error('保存失败:', result);
+            }
+        } catch (err) {
+            btn.textContent = '❌ 请求异常';
+            console.error('保存异常:', err);
+        }
+
+        setTimeout(() => {
+            btn.disabled = false;
+            btn.classList.remove('loading');
+            btn.textContent = '保存到多维表';
+        }, 3000);
+    }
 </script>
 </body>
 </html>
